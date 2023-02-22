@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:instagram_flutter/resources/auth_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/show_snackbar.dart';
 import 'package:instagram_flutter/widgets/text_field_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,12 +15,34 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void loginUser() async {
+    setState(() {
+      isLoading = true;
+    });
+    final result = await AuthMethods().loginUser(
+      context: context,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+    if (result == "success") {
+      // ignore: use_build_context_synchronously
+      showSnackbar(
+        context: context,
+        content: "You have Logged In Successfully...",
+      );
+    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -68,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               // Login Button
               InkWell(
-                onTap: () {},
+                onTap: loginUser,
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
@@ -83,7 +107,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  child: const Text("Login"),
+                  child: isLoading == false
+                      ? const Text("Login")
+                      : const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(

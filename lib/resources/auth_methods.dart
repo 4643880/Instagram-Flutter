@@ -65,21 +65,84 @@ class AuthMethods {
       if (e.code == 'weak-password') {
         devtools.log('The password provided is too weak.');
         await showErrorDialog(
-            context, "Weak Password", "The password provided is too weak.");
+          context,
+          "Weak Password",
+          "The password provided is too weak.",
+        );
       } else if (e.code == 'email-already-in-use') {
         devtools.log('The account already exists for that email.');
-        await showErrorDialog(context, "Email Already in Use",
-            "The account already exists for that email.");
+        await showErrorDialog(
+          context,
+          "Email Already in Use",
+          "The account already exists for that email.",
+        );
       } else if (e.code == "invalid-email") {
         devtools.log("Invalid Email Address");
-        await showErrorDialog(context, "Invalid Email Address",
-            "Please Enter Correct Email Address it's Invalid");
+        await showErrorDialog(
+          context,
+          "Invalid Email Address",
+          "Please Enter Correct Email Address it's Invalid",
+        );
       }
       res = e.code;
       return res;
     } catch (e) {
       res = e.toString();
       return res;
+    }
+  }
+
+  // Loggin in User
+  // logging in user
+  Future<String> loginUser({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
+    String res = "Some error Occurred";
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        // logging in user with email and password
+        await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        res = "success";
+        return res;
+      }
+      res = "Please enter all the fields";
+      return res;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        devtools.log('No user found for that email.');
+        await showErrorDialog(
+          context,
+          "User Not Found",
+          "No user found for that email. Please try again.",
+        );
+      } else if (e.code == 'wrong-password') {
+        devtools.log(
+          'Wrong password provided for that user.',
+        );
+        await showErrorDialog(
+          context,
+          "Wrong Password",
+          "Wrong password provided for that user. Please try again.",
+        );
+      } else {
+        devtools.log(e.code.toString());
+        await showErrorDialog(
+            context, "Something Went Wrong", "Error:  ${e.code}");
+      }
+      res = e.code;
+      return res;
+    } catch (e) {
+      res = e.toString();
+      return res;
+    }
+
+    Future<void> signOut() async {
+      await _auth.signOut();
     }
   }
 }
