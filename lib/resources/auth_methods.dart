@@ -143,9 +143,16 @@ class AuthMethods {
       res = e.toString();
       return res;
     }
+  }
 
-    Future<void> signOut() async {
-      await _auth.signOut();
-    }
+  // Get User
+  Future<MyUser> getUserDetails() async {
+    User currentUser = _auth.currentUser!;
+
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await _firestore.collection("users").doc(currentUser.uid).get();
+
+    final gettingUser = MyUser.fromSnap(snapshot: snapshot.data()!);
+    return gettingUser;
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/utils/dimentions.dart';
+import 'package:provider/provider.dart';
 
-class ResponsiveLayout extends StatelessWidget {
+class ResponsiveLayout extends StatefulWidget {
   final Widget webScreenLayout;
   final Widget mobileScreenLayout;
 
@@ -12,14 +14,30 @@ class ResponsiveLayout extends StatelessWidget {
   });
 
   @override
+  State<ResponsiveLayout> createState() => _ResponsiveLayoutState();
+}
+
+class _ResponsiveLayoutState extends State<ResponsiveLayout> {
+  @override
+  void initState() {
+    getUserData();
+    super.initState();
+  }
+
+  getUserData() async {
+    // Using false because I am setting the value using setter
+    await Provider.of<UserProvider>(context, listen: false).refreshUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, contraints) {
         if (contraints.maxWidth > webScreenSize) {
           // Web Screen
-          return webScreenLayout;
+          return widget.webScreenLayout;
         } else {
-          return mobileScreenLayout;
+          return widget.mobileScreenLayout;
         }
       },
     );

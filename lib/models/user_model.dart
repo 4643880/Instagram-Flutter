@@ -17,6 +17,18 @@ class MyUser {
     required this.following,
   });
 
+  factory MyUser.fromSnap({required Map<String, dynamic> snapshot}) {
+    return MyUser(
+      email: snapshot["email"],
+      uid: snapshot["uid"],
+      photoUrl: snapshot["photoUrl"],
+      username: snapshot["username"],
+      bio: snapshot["bio"],
+      followers: snapshot["followers"],
+      following: snapshot["following"],
+    );
+  }
+
   Map<String, dynamic> toJson() => {
         "username": username,
         "uid": uid,
