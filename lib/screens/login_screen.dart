@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/responsive/mobile_screen_layout.dart';
+import 'package:instagram_flutter/responsive/responsive_layout_screen.dart';
+import 'package:instagram_flutter/responsive/web_screen_layout.dart';
+import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/show_snackbar.dart';
 import 'package:instagram_flutter/widgets/text_field_widget.dart';
@@ -13,8 +17,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool isLoading = false;
 
   @override
@@ -38,6 +42,15 @@ class _LoginScreenState extends State<LoginScreen> {
       showSnackbar(
         context: context,
         content: "You have Logged In Successfully...",
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const ResponsiveLayout(
+            mobileScreenLayout: MobileScreenLayout(),
+            webScreenLayout: WebScreenLayout(),
+          ),
+        ),
       );
     }
     setState(() {
@@ -124,6 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 flex: 1,
                 child: Container(),
               ),
+              // Transitioning to Signup Screen
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -134,7 +148,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text("Don't have an account? "),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignUpScreen(),
+                        ),
+                      );
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
@@ -151,7 +172,6 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 height: 12,
               ),
-              // Transitioning to Signup
             ],
           ),
         ),

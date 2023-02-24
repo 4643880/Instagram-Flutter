@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/responsive/mobile_screen_layout.dart';
+import 'package:instagram_flutter/responsive/responsive_layout_screen.dart';
+import 'package:instagram_flutter/responsive/web_screen_layout.dart';
+import 'package:instagram_flutter/screens/login_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/show_snackbar.dart';
 import 'package:instagram_flutter/utils/utils.dart';
@@ -58,6 +62,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
           context: context,
           content: "You have Signed Up Successfully...",
         );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+        );
       }
       setState(() {
         isLoading = false;
@@ -69,160 +82,162 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: Container(),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Flexible(
+                flex: 2,
+                child: Container(),
+              ),
+              // Svg Image
+              SvgPicture.asset(
+                "assets/ic_instagram.svg",
+                height: 64,
+                colorFilter: const ColorFilter.mode(
+                  primaryColor,
+                  BlendMode.srcIn,
                 ),
-                // Svg Image
-                SvgPicture.asset(
-                  "assets/ic_instagram.svg",
-                  height: 64,
-                  colorFilter: const ColorFilter.mode(
-                    primaryColor,
-                    BlendMode.srcIn,
-                  ),
-                ),
-                const SizedBox(
-                  height: 64,
-                ),
-                // Circular Widget to Accept and show selected file
-                Stack(
-                  children: [
-                    _image != null
-                        ? CircleAvatar(
-                            radius: 64,
-                            backgroundImage: MemoryImage(_image!),
-                          )
-                        : const CircleAvatar(
-                            radius: 64,
-                            backgroundImage: NetworkImage(
-                              "https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg",
-                            ),
+              ),
+              Flexible(
+                flex: 1,
+                child: Container(),
+              ),
+              // Circular Widget to Accept and show selected file
+              Stack(
+                children: [
+                  _image != null
+                      ? CircleAvatar(
+                          radius: 64,
+                          backgroundImage: MemoryImage(_image!),
+                        )
+                      : const CircleAvatar(
+                          radius: 64,
+                          backgroundImage: NetworkImage(
+                            "https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small/default-avatar-profile-icon-of-social-media-user-vector.jpg",
                           ),
-                    Positioned(
-                      bottom: -10,
-                      left: 80,
-                      child: IconButton(
-                        onPressed: selectImage,
-                        icon: const Icon(
-                          Icons.add_a_photo,
                         ),
+                  Positioned(
+                    bottom: -10,
+                    left: 80,
+                    child: IconButton(
+                      onPressed: selectImage,
+                      icon: const Icon(
+                        Icons.add_a_photo,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                // Input Field For User Name
-                TextFieldInput(
-                  controller: _userNameController,
-                  hintText: "Enter Your User Name",
-                  keyboardType: TextInputType.text,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                // Input Field For Email
-                TextFieldInput(
-                  controller: _emailController,
-                  hintText: "Please Enter Email",
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                // Input Field For Password
-                TextFieldInput(
-                  controller: _passwordController,
-                  hintText: "Enter Your Password",
-                  obscureText: true,
-                  keyboardType: TextInputType.text,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                // Input Field For Email
-                TextFieldInput(
-                  controller: _bioController,
-                  hintText: "Please Enter Bio",
-                  keyboardType: TextInputType.text,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                // Login Button
-                InkWell(
-                  onTap: signupUser,
-                  child: Container(
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                    ),
-                    decoration: const ShapeDecoration(
-                      color: blueColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
-                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              // Input Field For User Name
+              TextFieldInput(
+                controller: _userNameController,
+                hintText: "Enter Your User Name",
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              // Input Field For Email
+              TextFieldInput(
+                controller: _emailController,
+                hintText: "Please Enter Email",
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              // Input Field For Password
+              TextFieldInput(
+                controller: _passwordController,
+                hintText: "Enter Your Password",
+                obscureText: true,
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              // Input Field For Email
+              TextFieldInput(
+                controller: _bioController,
+                hintText: "Please Enter Bio",
+                keyboardType: TextInputType.text,
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              // Login Button
+              InkWell(
+                onTap: signupUser,
+                child: Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                  ),
+                  decoration: const ShapeDecoration(
+                    color: blueColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8),
                       ),
                     ),
-                    child: isLoading == false
-                        ? const Text("Sign Up")
-                        : const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                            ),
-                          ),
                   ),
+                  child: isLoading == false
+                      ? const Text("Sign Up")
+                      : const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
-                const SizedBox(
-                  height: 12,
-                ),
+              ),
 
-                Flexible(
-                  flex: 1,
-                  child: Container(),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
+              Flexible(
+                flex: 2,
+                child: Container(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                    ),
+                    child: const Text("Already have an account? "),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
                       padding: const EdgeInsets.symmetric(
                         vertical: 8,
                       ),
-                      child: const Text("Don't have an account? "),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                        ),
-                        child: const Text(
-                          "SIGNUP",
-                          style: TextStyle(
-                              color: blueColor, fontWeight: FontWeight.bold),
-                        ),
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(
+                            color: blueColor, fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                // Transitioning to Signup
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              // Transitioning to Signup
+            ],
           ),
         ),
       ),

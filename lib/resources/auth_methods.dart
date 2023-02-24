@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -92,7 +91,6 @@ class AuthMethods {
     }
   }
 
-  // Loggin in User
   // logging in user
   Future<String> loginUser({
     required BuildContext context,
