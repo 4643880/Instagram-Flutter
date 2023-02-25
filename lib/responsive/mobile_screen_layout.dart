@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/providers/user_provider.dart';
+import 'package:instagram_flutter/screens/add_post_screen.dart';
+import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/global_variables.dart';
 import 'dart:developer' as devtools show log;
-
 import 'package:provider/provider.dart';
 
 class MobileScreenLayout extends StatefulWidget {
@@ -14,24 +17,78 @@ class MobileScreenLayout extends StatefulWidget {
 }
 
 class _MobileScreenLayoutState extends State<MobileScreenLayout> {
+  int _page = 0;
+  late PageController pageController;
+
+  void navigationTapped(int page) {
+    // Changing Page of Screen
+    pageController.jumpToPage(page);
+  }
+
+  void onPageChanged(int page) {
+    setState(() {
+      // Changing Color of icon
+      _page = page;
+    });
+  }
+
+  @override
+  void initState() {
+    pageController = PageController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-          child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(user?.username ?? "abc"),
-          ElevatedButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-            },
-            child: const Text("Sign out"),
+      body: PageView(
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        physics: const NeverScrollableScrollPhysics(),
+        children: dashboardScreenItems,
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        backgroundColor: mobileBackgroundColor,
+        onTap: navigationTapped,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              color: _page == 0 ? primaryColor : secondaryColor,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.search,
+              color: _page == 1 ? primaryColor : secondaryColor,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add_circle,
+              color: _page == 2 ? primaryColor : secondaryColor,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.favorite,
+              color: _page == 3 ? primaryColor : secondaryColor,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              color: _page == 4 ? primaryColor : secondaryColor,
+            ),
           ),
         ],
-      )),
+      ),
     );
   }
 }
