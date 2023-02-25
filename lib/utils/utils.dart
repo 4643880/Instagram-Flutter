@@ -1,7 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-picImage(ImageSource source) async {
+Future<Uint8List?> pickImage(ImageSource source) async {
   final ImagePicker _picker = ImagePicker();
 
   // Pick an image
