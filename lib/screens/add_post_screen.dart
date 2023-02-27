@@ -20,6 +20,7 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   late final TextEditingController _descriptionController;
   Uint8List? _file;
+  bool isLoading = false;
 
   void postImage({
     required String uid,
@@ -28,6 +29,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
     required String description,
     required Uint8List file,
   }) async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final res = await FirestoreMethods().uploadPost(
         description: description,
@@ -37,11 +41,22 @@ class _AddPostScreenState extends State<AddPostScreen> {
         profileImage: profileImage,
       );
       if (res == "success") {
+        setState(() {
+          isLoading = false;
+          clearImage();
+          _descriptionController.clear();
+        });
         showSnackbar(context: context, content: "Posted Successfully");
       }
     } catch (e) {
       showSnackbar(context: context, content: e.toString());
     }
+  }
+
+  void clearImage() {
+    setState(() {
+      _file = null;
+    });
   }
 
   _selectImage(BuildContext context) async {
@@ -122,9 +137,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
-                onPressed: () {
-                  showSnackbar(context: context, content: "Kay Hall Hay");
-                },
+                onPressed: clearImage,
                 icon: const Icon(Icons.arrow_back),
               ),
               title: const Text("Post to"),
@@ -153,6 +166,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             body: Column(
               children: [
+                isLoading == true
+                    ? const LinearProgressIndicator()
+                    : const Padding(
+                        padding: EdgeInsets.only(top: 0.0),
+                      ),
+                const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
