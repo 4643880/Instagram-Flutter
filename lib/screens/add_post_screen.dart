@@ -2,8 +2,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram_flutter/models/post_model.dart';
 import 'package:instagram_flutter/providers/user_provider.dart';
+import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/show_snackbar.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +20,29 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   late final TextEditingController _descriptionController;
   Uint8List? _file;
+
+  void postImage({
+    required String uid,
+    required String username,
+    required String profileImage,
+    required String description,
+    required Uint8List file,
+  }) async {
+    try {
+      final res = await FirestoreMethods().uploadPost(
+        description: description,
+        file: file,
+        uid: uid,
+        username: username,
+        profileImage: profileImage,
+      );
+      if (res == "success") {
+        showSnackbar(context: context, content: "Posted Successfully");
+      }
+    } catch (e) {
+      showSnackbar(context: context, content: e.toString());
+    }
+  }
 
   _selectImage(BuildContext context) async {
     Future.delayed(
@@ -96,14 +122,24 @@ class _AddPostScreenState extends State<AddPostScreen> {
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  showSnackbar(context: context, content: "Kay Hall Hay");
+                },
                 icon: const Icon(Icons.arrow_back),
               ),
               title: const Text("Post to"),
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    postImage(
+                      uid: user!.uid,
+                      username: user.username,
+                      profileImage: user.photoUrl,
+                      description: _descriptionController.text,
+                      file: _file!,
+                    );
+                  },
                   child: const Text(
                     "Post",
                     style: TextStyle(
