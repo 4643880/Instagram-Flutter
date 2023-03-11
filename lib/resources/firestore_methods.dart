@@ -73,6 +73,7 @@ class FirestoreMethods {
     }
   }
 
+  // Post Comment
   Future<void> postComment({
     required String postId,
     required String text,
@@ -101,6 +102,15 @@ class FirestoreMethods {
       } else {
         devtools.log("Text is empty...");
       }
+    } catch (e) {
+      devtools.log(e.toString());
+    }
+  }
+
+  // Delete Post
+  Future<void> deletePost(String postId) async {
+    try {
+      await _firestore.collection("posts").doc(postId).delete();
     } catch (e) {
       devtools.log(e.toString());
     }
