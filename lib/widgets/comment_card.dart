@@ -1,7 +1,11 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
+import "package:intl/intl.dart";
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({super.key});
+  final QueryDocumentSnapshot<Map<String, dynamic>> comment;
+
+  const CommentCard({super.key, required this.comment});
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -14,10 +18,9 @@ class _CommentCardState extends State<CommentCard> {
       padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 18,
-            backgroundImage: NetworkImage(
-                "https://plus.unsplash.com/premium_photo-1666184127692-2a7fc43ecba6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwxOXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60"),
+            backgroundImage: NetworkImage(widget.comment.data()["profilePic"]),
           ),
           Expanded(
             child: Padding(
@@ -27,23 +30,26 @@ class _CommentCardState extends State<CommentCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   RichText(
-                    text: const TextSpan(
+                    text: TextSpan(
                       children: [
                         TextSpan(
-                          text: "Username ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          text:
+                              "${widget.comment.data()["userName"].toString()} ",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         TextSpan(
-                          text: "some description will be here",
+                          text: "${widget.comment.data()["text"].toString()} ",
                         ),
                       ],
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 4),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      "23-12-2023",
-                      style: TextStyle(
+                      DateFormat.yMMMd().format(
+                        (widget.comment.data()["datePublished"].toDate()),
+                      ),
+                      style: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
                       ),

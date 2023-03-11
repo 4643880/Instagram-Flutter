@@ -38,7 +38,50 @@ class _CommentScreenState extends State<CommentScreen> {
         title: const Text("Comments"),
         centerTitle: false,
       ),
-      body: const CommentCard(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection("posts")
+            .doc(widget.post.data()["postId"])
+            .collection("comments")
+            .orderBy("datePublished", descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.active:
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: snapshot.data?.docs.length,
+                  itemBuilder: (context, index) {
+                    final eachComment = snapshot.data!.docs[index];
+                    return CommentCard(
+                      comment: eachComment,
+                    );
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              } else {
+                return const Center(
+                  child: RefreshProgressIndicator(
+                    color: blueColor,
+                  ),
+                );
+              }
+            case ConnectionState.waiting:
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: blueColor,
+                ),
+              );
+            default:
+              return const Center(
+                child: RefreshProgressIndicator(),
+              );
+          }
+        },
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
           margin: EdgeInsets.only(
