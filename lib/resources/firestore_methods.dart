@@ -1,6 +1,5 @@
 import 'dart:developer' as devtools show log;
 import 'dart:typed_data';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:instagram_flutter/models/post_model.dart';
@@ -68,6 +67,39 @@ class FirestoreMethods {
         await _firestore.collection("posts").doc(postId).update({
           "likes": FieldValue.arrayUnion([uid]),
         });
+      }
+    } catch (e) {
+      devtools.log(e.toString());
+    }
+  }
+
+  Future<void> postComment({
+    required String postId,
+    required String text,
+    required String uid,
+    required String name,
+    required String profilePic,
+  }) async {
+    try {
+      if (text.isNotEmpty) {
+        final commentId = const Uuid().v1();
+        await _firestore
+            .collection("posts")
+            .doc(postId)
+            .collection("comments")
+            .doc(commentId)
+            .set(
+          {
+            "profilePic": profilePic,
+            "userName": name,
+            "uid": uid,
+            "text": text,
+            "commentId": commentId,
+            "datePublished": DateTime.now()
+          },
+        );
+      } else {
+        devtools.log("Text is empty...");
       }
     } catch (e) {
       devtools.log(e.toString());
