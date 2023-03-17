@@ -113,4 +113,39 @@ class FirestoreMethods {
       devtools.log(e.toString());
     }
   }
+
+  // Follow User
+  Future<void> followAndUnfollowUser({
+    required String currentUsersUid,
+    required String followUid,
+  }) async {
+    try {
+      DocumentSnapshot<Map<String, dynamic>> snap =
+          await _firestore.collection("users").doc(currentUsersUid).get();
+      List following = snap.data()?["following"];
+
+      // HINT: I am your follower and you are my follower
+      // HINT: I am following you and you are following me
+
+      if (following.contains(followUid)) {
+        await _firestore.collection('users').doc(currentUsersUid).update({
+          'following': FieldValue.arrayRemove([followUid])
+        });
+
+        await _firestore.collection('users').doc(followUid).update({
+          'followers': FieldValue.arrayRemove([currentUsersUid])
+        });
+      } else {
+        await _firestore.collection('users').doc(currentUsersUid).update({
+          'following': FieldValue.arrayUnion([followUid])
+        });
+
+        await _firestore.collection('users').doc(followUid).update({
+          'followers': FieldValue.arrayUnion([currentUsersUid])
+        });
+      }
+    } catch (e) {
+      devtools.log(e.toString());
+    }
+  }
 }
