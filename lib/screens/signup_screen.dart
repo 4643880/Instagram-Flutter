@@ -8,6 +8,7 @@ import 'package:instagram_flutter/responsive/responsive_layout_screen.dart';
 import 'package:instagram_flutter/responsive/web_screen_layout.dart';
 import 'package:instagram_flutter/screens/login_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/utils/global_variables.dart';
 import 'package:instagram_flutter/utils/show_snackbar.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/text_field_widget.dart';
@@ -85,7 +86,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: SafeArea(
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: MediaQuery.of(context).size.width > webScreenSize
+              ? EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width / 3)
+              : const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
             children: [
               Flexible(
