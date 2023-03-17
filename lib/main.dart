@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
             switch (snapshot.connectionState) {
               case ConnectionState.active:
                 if (snapshot.hasData) {
-                  return const ResponsiveLayout(
+                  return ResponsiveLayout(
                     mobileScreenLayout: MobileScreenLayout(),
                     webScreenLayout: WebScreenLayout(),
                   );

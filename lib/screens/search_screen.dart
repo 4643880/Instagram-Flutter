@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:instagram_flutter/screens/profile_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'dart:developer' as devtools show log;
 
@@ -68,12 +69,19 @@ class _SearchScreenState extends State<SearchScreen> {
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (context, index) {
                           final eachUser = snapshot.data?.docs[index];
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(eachUser?.data()["photoUrl"]),
+                          return InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ProfileScreen(uid: eachUser?.data()["uid"]),
+                              ));
+                            },
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(eachUser?.data()["photoUrl"]),
+                              ),
+                              title: Text(eachUser?.data()["username"]),
                             ),
-                            title: Text(eachUser?.data()["username"]),
                           );
                         },
                       );

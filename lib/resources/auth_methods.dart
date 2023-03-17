@@ -12,6 +12,17 @@ class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Get User
+  Future<MyUser> getUserDetails() async {
+    User currentUser = _auth.currentUser!;
+
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+        await _firestore.collection("users").doc(currentUser.uid).get();
+
+    final gettingUser = MyUser.fromSnap(snapshot: snapshot.data()!);
+    return gettingUser;
+  }
+
   // Signup User
   Future<String> signupUser({
     required BuildContext context,
@@ -143,16 +154,5 @@ class AuthMethods {
       res = e.toString();
       return res;
     }
-  }
-
-  // Get User
-  Future<MyUser> getUserDetails() async {
-    User currentUser = _auth.currentUser!;
-
-    DocumentSnapshot<Map<String, dynamic>> snapshot =
-        await _firestore.collection("users").doc(currentUser.uid).get();
-
-    final gettingUser = MyUser.fromSnap(snapshot: snapshot.data()!);
-    return gettingUser;
   }
 }

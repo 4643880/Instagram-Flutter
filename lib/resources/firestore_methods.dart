@@ -1,10 +1,8 @@
 import 'dart:developer' as devtools show log;
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:instagram_flutter/models/post_model.dart';
 import 'package:instagram_flutter/resources/storage_methods.dart';
-import 'package:instagram_flutter/utils/show_snackbar.dart';
 import 'package:uuid/uuid.dart';
 
 class FirestoreMethods {

@@ -43,7 +43,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  signupUser() async {
+  void signupUser() async {
     if (_image != null) {
       setState(() {
         isLoading = true;
@@ -57,7 +57,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         file: _image!,
       );
       if (result == "success") {
-        // ignore: use_build_context_synchronously
         showSnackbar(
           context: context,
           content: "You have Signed Up Successfully...",
@@ -66,7 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const ResponsiveLayout(
+            builder: (context) => ResponsiveLayout(
               mobileScreenLayout: MobileScreenLayout(),
               webScreenLayout: WebScreenLayout(),
             ),

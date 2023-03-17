@@ -4,6 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/screens/add_post_screen.dart';
+import 'package:instagram_flutter/screens/feed_screen.dart';
+import 'package:instagram_flutter/screens/profile_screen.dart';
+import 'package:instagram_flutter/screens/search_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
 import 'dart:developer' as devtools show log;
@@ -51,7 +54,15 @@ class _MobileScreenLayoutState extends State<MobileScreenLayout> {
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: const NeverScrollableScrollPhysics(),
-        children: dashboardScreenItems,
+        children: [
+          const FeedScreen(),
+          const SearchScreen(),
+          const AddPostScreen(),
+          const Center(child: Text("favorite")),
+          ProfileScreen(
+            uid: FirebaseAuth.instance.currentUser!.uid,
+          )
+        ],
       ),
       bottomNavigationBar: CupertinoTabBar(
         backgroundColor: mobileBackgroundColor,
