@@ -11,8 +11,6 @@ class ResponsiveLayout extends StatefulWidget {
   final Widget webScreenLayout;
   final Widget mobileScreenLayout;
 
-  bool isLoadingData = false;
-
   ResponsiveLayout({
     super.key,
     required this.webScreenLayout,
@@ -24,6 +22,8 @@ class ResponsiveLayout extends StatefulWidget {
 }
 
 class _ResponsiveLayoutState extends State<ResponsiveLayout> {
+  bool isLoadingData = false;
+
   @override
   void initState() {
     getUserData();
@@ -32,7 +32,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   getUserData() async {
     setState(() {
-      widget.isLoadingData = true;
+      isLoadingData = true;
     });
     DocumentSnapshot<Map<String, dynamic>> result = await FirebaseFirestore
         .instance
@@ -40,27 +40,31 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
         .doc(FirebaseAuth.instance.currentUser?.uid)
         .get();
     if (result.data() != null) {
-      setState(() {
-        widget.isLoadingData = false;
-      });
+      if (mounted) {
+        await Provider.of<UserProvider>(context, listen: false).refreshUser();
 
-      await Provider.of<UserProvider>(context, listen: false).refreshUser();
+        isLoadingData = false;
+        setState(() {});
+      }
     } else {
       await Future.delayed(const Duration(seconds: 5));
       if (result.data() != null) {
-        setState(() {
-          widget.isLoadingData = false;
-        });
+        if (mounted) {
+          await Provider.of<UserProvider>(context, listen: false).refreshUser();
 
-        await Provider.of<UserProvider>(context, listen: false).refreshUser();
+          isLoadingData = false;
+          setState(() {});
+        }
       } else {
         await Future.delayed(const Duration(seconds: 5));
         if (result.data() != null) {
-          setState(() {
-            widget.isLoadingData = false;
-          });
+          if (mounted) {
+            await Provider.of<UserProvider>(context, listen: false)
+                .refreshUser();
 
-          await Provider.of<UserProvider>(context, listen: false).refreshUser();
+            isLoadingData = false;
+            setState(() {});
+          }
         }
       }
     }
@@ -68,7 +72,7 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.isLoadingData == false
+    return isLoadingData == false
         ? LayoutBuilder(
             builder: (context, contraints) {
               if (contraints.maxWidth > webScreenSize) {

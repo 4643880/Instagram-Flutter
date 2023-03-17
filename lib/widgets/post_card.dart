@@ -30,9 +30,9 @@ class _PostCardState extends State<PostCard> {
           .doc(widget.post.data()["postId"])
           .collection("comments")
           .get();
-      setState(() {
-        commentLength = result.docs.length;
-      });
+
+      commentLength = result.docs.length;
+
       return commentLength;
     } catch (e) {
       devtools.log(e.toString());
