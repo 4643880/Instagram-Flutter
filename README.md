@@ -1,6 +1,6 @@
-# Instagram Clone
+# Ecommerce App User Interface 
 
-A Ecommerce App UI - Works on Android, iOS & Web! 
+A Ecommerce App UI - Works on Android, iOS! 
 
 ## Features
 Developed Ecommerce App with Flutter & Firebase. This application comes with several features.
